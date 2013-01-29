@@ -8,7 +8,7 @@ use it.
 
 ``hwaf`` is a ``Go`` binary produce by the [Go toolchain](http://golang.org).
 So, if you have already the ``Go`` toolchain installed (see
-[here](http://golang/install.html) for instructions) you just have to
+[here](http://golang.org/install.html) for instructions) you just have to
 do:
 
 ```sh
