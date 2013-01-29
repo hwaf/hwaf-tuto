@@ -38,7 +38,9 @@ $ export PATH=$HWAF_ROOT/bin:$PATH
 
 The central tool in ``hwaf`` is the concept of the workarea, where
 locally checked out packages will live.
-To create such a place:
+
+### Introduction
+To create such a workarea:
 
 ```sh
 $ cd dev
@@ -68,6 +70,7 @@ cmtcfg=x86_64-archlinux-gcc47-opt
 projects=
 ```
 
+### Create a workarea
 We'll first check out a few test packages from github prepared for
 this tutorial:
 
@@ -88,6 +91,7 @@ src/pkg-ac (git)
 src/pkg-ab (git)
 ```
 
+### Configure the workarea
 Then, we can run the ``configure`` command to test whether all
 dependencies are installed and generate the bootstrap code to be able
 to compile:
@@ -116,6 +120,7 @@ njobs-max                                : 2
 
 ```
 
+### Building targets
 As everything went smoothly, we can heed towards building the objects
 and targets:
 
@@ -158,6 +163,7 @@ Waf: Leaving directory `/home/binet/dev/work/__build__'
 'install' finished successfully (0.066s)
 ```
 
+### Usual workflow
 As this (build+install) is such a mundane combination of commands, a
 convenience wrapper is provided:
 
