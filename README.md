@@ -6,7 +6,7 @@ use it.
 
 ## Installation
 
-``hwaf`` is a ``Go`` binary produce by the [Go toolchain](http://golang.org).
+``hwaf`` is a ``Go`` binary produced by the [Go toolchain](http://golang.org).
 So, if you have already the ``Go`` toolchain installed (see
 [here](http://golang.org/install.html) for instructions) you just have to
 do:
@@ -22,7 +22,7 @@ and ready.
 
 
 Packaged up binaries for ``hwaf`` are also available [here](http://cern.ch/mana-fwk/downloads/tar).
-Untar under some directory like so:
+Untar under some directory like so (for linux 64b):
 
 ```sh
 $ mkdir local
@@ -90,6 +90,15 @@ src/pkg-aa (git)
 src/pkg-ac (git)
 src/pkg-ab (git)
 ```
+
+The ``hwaf pkg co`` retrieved and installed the packages' sources
+under the ``src`` directory.
+Likewise, ``hwaf`` will build the artifacts under the ``__build__``
+directory and will install everything under the ``install-area``
+directory.
+
+This can be modified of course, but following "convention over
+configuration" is usually better.
 
 ### Configure the workarea
 Then, we can run the ``configure`` command to test whether all
