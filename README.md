@@ -329,10 +329,134 @@ The argument to this function is a ``waf.Context`` object which:
 - gives access to the file system
 - gives access to build/configure functions
 
+Let's say that our new package will use the shared library from
+``pkg-aa``.
+Modify the ``pkg_deps`` like so:
+
+```python
+def pkg_deps(ctx):
+    ctx.use_pkg('pkg-aa')
+    return
+```
+
+### configure
+``configure`` is where one configures the package or project.
+There, we can discover external libraries/binaries, load new build
+tools/functions and/or define new environment variables.
+
+Let's try to detect whether our system has ``CLHEP`` installed but
+don't fail the build if it does not find it.
+
+Let's modify ``configure``:
+
+```python
+def configure(ctx):
+    ctx.load('find_clhep')
+    ctx.find_clhep(mandatory=False)
+    ctx.start_msg("was clhep found ?")
+    ctx.end_msg(ctx.env.HWAF_FOUND_CLHEP)
+    if ctx.env.HWAF_FOUND_CLHEP:
+        ctx.start_msg("clhep version")
+        ctx.end_msg(ctx.env.CLHEP_VERSION)
+        msg.info("clhep linkflags: %s" % ctx.env['LINKFLAGS_CLHEP'])
+        msg.info("clhep cxxflags: %s" % ctx.env['CXXFLAGS_CLHEP'])
+```
+
 Note that, as we added a new package, we *must* re-configure the
 workarea:
 
 ```sh
 $ hwaf configure
+[...]
+Checking for program clhep-config        : /usr/bin/clhep-config 
+Checking for '/usr/bin/clhep-config'     : yes 
+Found clhep at                           : (local environment) 
+Checking clhep version                   : ok 
+clhep version                            : 2.1.3.1 
+was clhep found ?                        : ok 
+clhep version                            : 2.1.3.1 
+clhep linkflags: ['-Wl,-O1,--sort-common,--as-needed,-z,relro']
+clhep cxxflags:  []
 ```
+
+### build
+``build`` is where one declares the build targets.
+
+Let's create a simple shared library which uses ``CLHEP``
+``LorentzVector``:
+
+```sh
+$ touch src/mytools/mypkg/src/mypkgtool.cxx
+```
+
+```c++
+#include "CLHEP/Vector/LorentzVector.h"
+
+extern "C" {
+  
+float
+clhep_calc_mt(float x, float y, float z, float t) 
+{
+  return CLHEP::HepLorentzVector(x, y, z, t).mt();
+}
+
+}
+
+// EOF
+```
+
+```sh
+$ mkdir src/mytools/mypkg/python
+$ touch src/mytools/mypkg/python/pyclhep.py
+```
+
+```python
+import ctypes
+lib = ctypes.cdll.LoadLibrary('libhello-clhep.so')
+if not lib:
+    raise RuntimeError("could not find hello-clhep")
+
+calc_mt = lib.clhep_calc_mt
+calc_mt.argtypes = [ctypes.c_float]*4
+calc_mt.restype = ctypes.c_float
+
+import sys
+sys.stdout.write("hlv.mt(10,10,10,20) = %s\n" % calc_mt(10,10,10,20))
+sys.stdout.flush()
+# EOF #
+```
+
+and modify the ``build`` function like so:
+
+```python
+def build(ctx):
+    ctx.build_linklib(
+        name = 'hello-clhep',
+        source = 'src/*.cxx',
+        use = ['CLHEP'],
+        )
+    
+    ctx(
+        features     = 'py',
+        name         = 'py-clhep',
+        source       = 'python/pyclhep.py',
+        install_path = '${INSTALL_AREA}/python',
+        )
+
+    return
+```
+
+Rebuild and run:
+```sh
+$ hwaf
+[...]
+$ hwaf run python -c 'import pyclhep'
+hlv.mt(10,10,10,20) = 17.32050895690918
+```
+
+Note that we used the underlying features of ``waf`` to build and
+install the python module.
+This could be packaged up in a nice function instead, as was actually
+done for the ``build_linklib`` function (which is defined and exported
+in the ``pkg-settings`` package.)
 
