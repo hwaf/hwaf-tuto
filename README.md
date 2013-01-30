@@ -143,7 +143,7 @@ Waf: Leaving directory `/home/binet/dev/work/__build__'
 'build' finished successfully (1.234s)
 ```
 
-And the install:
+And then install like so:
 ```sh
 $ hwaf install
 Waf: Entering directory `/home/binet/dev/work/__build__'
@@ -202,3 +202,29 @@ Waf: Leaving directory `/home/binet/dev/work/__build__'
 'install' finished successfully (0.038s)
 
 ```
+
+We can now test a bit the artifacts produced as the result of the
+build.
+``pkg-aa`` produced a shared library ``lib-pkgaa`` and a python module
+``pkgaa``.
+Let's try out the python module:
+
+```sh
+$ hwaf shell
+[hwaf] $ python -c 'import pkgaa'
+hello from pkgaa
+[hwaf] $ ^D
+$ 
+```
+
+``hwaf`` manages the environment produced or modified by a project (or
+workarea) and allows the user to step into it, without modifying the
+parent environment, via the ``hwaf shell`` command to spawn an
+interactive subshell, or via ``hwaf run some-command`` command:
+
+```sh
+$ hwaf run python -c 'import pkgaa'
+hello from pkgaa
+'run' finished successfully (0.108s)
+```
+
