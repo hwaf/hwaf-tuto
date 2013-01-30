@@ -228,3 +228,37 @@ hello from pkgaa
 'run' finished successfully (0.108s)
 ```
 
+This is actual proof the environment has been modified, _i.e._ the
+``$PYTHONPATH`` environment variable has been adjusted to encompass
+the default installation area of the workarea.
+
+## Binary distributions
+
+Once a project has been built, we can distribute it in binary form:
+
+```sh
+$ hwaf bdist
+$ tar zft work-20130130-x86_64-archlinux-gcc47-opt.tar.gz
+work-20130130/
+work-20130130/lib/
+work-20130130/lib/libpkg-aa.so
+work-20130130/lib/libpkg-ab.so
+work-20130130/include/
+work-20130130/include/pkg-aa/
+work-20130130/include/pkg-aa/h1d.hh
+work-20130130/include/pkg-ab/
+work-20130130/include/pkg-ab/h1d.hh
+work-20130130/project.info
+work-20130130/share/
+work-20130130/share/hwaf/
+work-20130130/share/hwaf/__hwaf_module__work.py
+work-20130130/python/
+work-20130130/python/__pycache__/
+work-20130130/python/__pycache__/pkgaa.cpython-33.pyc
+work-20130130/python/pkgaa.pyc
+work-20130130/python/pkgaa.py
+work-20130130/bin/
+work-20130130/bin/pkg-ac
+```
+
+## Anatomy of a wscript file
