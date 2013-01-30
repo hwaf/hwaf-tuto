@@ -469,3 +469,22 @@ This could be packaged up in a nice function instead, as was actually
 done for the ``build_linklib`` function (which is defined and exported
 in the ``pkg-settings`` package.)
 
+### Queries
+
+At the moment, a few queries have been implemented:
+
+```sh
+# list the parent project of the current project
+$ hwaf show projects
+project dependency list for [work] (#projs=0)
+work
+'show-projects' finished successfully (0.018s)
+
+# list the dependencies of a given package
+$ hwaf show pkg-uses mytools/mypkg
+package dependency list for [mytools/mypkg] (#pkgs=1)
+mytools/mypkg
+  pkg-aa
+'show-pkg-uses' finished successfully (0.018s)
+```
+
