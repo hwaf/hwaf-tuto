@@ -262,3 +262,77 @@ work-20130130/bin/pkg-ac
 ```
 
 ## Anatomy of a wscript file
+
+The equivalent of the good ol' ``Makefile`` for ``hwaf`` is the
+``wscript`` file.
+It is (ATM) a python file with a few mandatory functions.
+``hwaf`` ships with a command to create a new package.
+Let's do that:
+
+```sh
+$ cd work
+$ hwaf pkg create mytools/mypkg
+$ hwaf pkg ls
+src/mytools/mypkg (local)
+src/pkg-aa (git)
+src/pkg-settings (git)
+src/pkg-ac (git)
+src/pkg-ab (git)
+
+$ cat src/mytools/mypkg/wscript
+```
+
+```python
+# -*- python -*-
+# automatically generated wscript
+
+import waflib.Logs as msg
+
+PACKAGE = {
+    'name': 'mytools/mypkg',
+    'author': ["Sebastien Binet"], 
+}
+
+def pkg_deps(ctx):
+    # put your package dependencies here.
+    # e.g.:
+    # ctx.use_pkg('AtlasPolicy')
+    return
+
+def configure(ctx):
+    msg.debug('[configure] package name: '+PACKAGE['name'])
+    return
+
+def build(ctx):
+    # build artifacts
+    # e.g.:
+    # ctx.build_complib(
+    #    name = 'mypkg',
+    #    source = 'src/*.cxx src/components/*.cxx',
+    #    use = ['lib1', 'lib2', 'ROOT', 'boost', ...],
+    # )
+    # ctx.install_headers()
+    # ctx.build_pymodule(source=['python/*.py'])
+    # ctx.install_joboptions(source=['share/*.py'])
+    return
+```
+
+### pkg_deps
+``pkg_deps`` is where one lists the package dependencies:
+- build tools to use,
+- external binaries, external libraries, ...
+- 3rd-party ``hwaf`` build utils, ...
+- packages defining new build rules, ...
+
+The argument to this function is a ``waf.Context`` object which:
+- encapsulates the current environment of the build, 
+- gives access to the file system
+- gives access to build/configure functions
+
+Note that, as we added a new package, we *must* re-configure the
+workarea:
+
+```sh
+$ hwaf configure
+```
+
