@@ -142,6 +142,12 @@ EOF
     hwaf clean
     hwaf
 
+    echo "::: project deps..."
+    hwaf show projects
+
+    echo "::: pkg deps..."
+    hwaf show pkg-uses mytools/mypkg
+
     echo "::: C++ compilation/link flags..."
     hwaf show flags CXXFLAGS LINKFLAGS
 
