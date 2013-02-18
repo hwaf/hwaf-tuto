@@ -28,7 +28,7 @@ Untar under some directory like so (for linux 64b):
 $ mkdir local
 $ cd local
 $ curl -L \
-  http://cern.ch/mana-fwk/downloads/tar/hwaf-20130130-linux-amd64.tar.gz \
+  http://cern.ch/mana-fwk/downloads/tar/hwaf-20130208-linux-amd64.tar.gz \
   | tar zxf -
 $ export HWAF_ROOT=`pwd`
 $ export PATH=$HWAF_ROOT/bin:$PATH
@@ -70,38 +70,8 @@ cmtcfg=x86_64-archlinux-gcc47-opt
 projects=
 ```
 
-### Create a workarea
-We'll first check out a few test packages from github prepared for
-this tutorial:
-
-```sh
-$ cd work
-$ hwaf pkg co git://github.com/mana-fwk/hwaf-tests-pkg-settings pkg-settings
-$ hwaf pkg ls
-src/pkg-settings (git)
-
-$ hwaf pkg co git://github.com/mana-fwk/hwaf-tests-pkg-aa pkg-aa
-$ hwaf pkg co git://github.com/mana-fwk/hwaf-tests-pkg-ab pkg-ab
-$ hwaf pkg co git://github.com/mana-fwk/hwaf-tests-pkg-ac pkg-ac
-
-$ hwaf pkg ls
-src/pkg-settings (git)                             
-src/pkg-aa (git)
-src/pkg-ac (git)
-src/pkg-ab (git)
-```
-
-The ``hwaf pkg co`` retrieved and installed the packages' sources
-under the ``src`` directory.
-Likewise, ``hwaf`` will build the artifacts under the ``__build__``
-directory and will install everything under the ``install-area``
-directory.
-
-This can be modified of course, but following "convention over
-configuration" is usually better.
-
 ### Configure the workarea
-Then, we can run the ``configure`` command to test whether all
+We can run the ``configure`` command to test whether all
 dependencies are installed and generate the bootstrap code to be able
 to compile:
 
@@ -130,146 +100,6 @@ njobs-max                                : 2
 
 ```
 
-### Building targets
-As everything went smoothly, we can heed towards building the objects
-and targets:
-
-```sh
-$ hwaf build
-Waf: Entering directory `/home/binet/dev/work/__build__'
-ROOT-home: /usr
-ROOT-home: /usr
-ROOT-home: /usr
-[1/8] cxx: src/pkg-aa/src/pkg-aa.cxx -> __build__/src/pkg-aa/src/pkg-aa.cxx.1.o
-[2/8] cxx: src/pkg-ab/src/pkg-ab.cxx -> __build__/src/pkg-ab/src/pkg-ab.cxx.1.o
-[3/8] cxx: src/pkg-ac/src/pkg-ac.cxx -> __build__/src/pkg-ac/src/pkg-ac.cxx.1.o
-[4/8] cxxshlib: __build__/src/pkg-aa/src/pkg-aa.cxx.1.o -> __build__/src/pkg-aa/libpkg-aa.so
-[5/8] symlink_tsk: __build__/src/pkg-aa/libpkg-aa.so -> __build__/.install_area/lib/libpkg-aa.so
-[6/8] cxxshlib: __build__/src/pkg-ab/src/pkg-ab.cxx.1.o -> __build__/src/pkg-ab/libpkg-ab.so
-[7/8] symlink_tsk: __build__/src/pkg-ab/libpkg-ab.so -> __build__/.install_area/lib/libpkg-ab.so
-[8/8] cxxprogram: __build__/src/pkg-ac/src/pkg-ac.cxx.1.o -> __build__/src/pkg-ac/pkg-ac
-Waf: Leaving directory `/home/binet/dev/work/__build__'
-'build' finished successfully (1.234s)
-```
-
-And then install like so:
-```sh
-$ hwaf install
-Waf: Entering directory `/home/binet/dev/work/__build__'
-ROOT-home: /usr
-- install install-area/include/pkg-aa/h1d.hh (from src/pkg-aa/pkg-aa/h1d.hh)
-ROOT-home: /usr
-- install install-area/include/pkg-ab/h1d.hh (from src/pkg-ab/pkg-ab/h1d.hh)
-ROOT-home: /usr
-- install install-area/include/pkg-aa/h1d.hh (from src/pkg-aa/pkg-aa/h1d.hh)
-- install install-area/include/pkg-ab/h1d.hh (from src/pkg-ab/pkg-ab/h1d.hh)
-+ install install-area/project.info (from __build__/project.info)
-+ install install-area/share/hwaf/__hwaf_module__work.py (from __build__/__hwaf_module__work.py)
-+ install install-area/lib/libpkg-aa.so (from __build__/src/pkg-aa/libpkg-aa.so)
-+ install install-area/lib/libpkg-ab.so (from __build__/src/pkg-ab/libpkg-ab.so)
-+ install /home/binet/dev/work/install-area/bin/pkg-ac (from __build__/src/pkg-ac/pkg-ac)
-Waf: Leaving directory `/home/binet/dev/work/__build__'
-- install install-area/python/pkgaa.py (from src/pkg-aa/python/pkgaa.py)
-'install' finished successfully (0.066s)
-```
-
-### Usual workflow
-As this (build+install) is such a mundane combination of commands, a
-convenience wrapper is provided:
-
-```sh
-$ hwaf
-Waf: Entering directory `/home/binet/dev/work/__build__'
-ROOT-home: /usr
-ROOT-home: /usr
-ROOT-home: /usr
-[1/8] cxx: src/pkg-aa/src/pkg-aa.cxx -> __build__/src/pkg-aa/src/pkg-aa.cxx.1.o
-[2/8] cxx: src/pkg-ab/src/pkg-ab.cxx -> __build__/src/pkg-ab/src/pkg-ab.cxx.1.o
-[3/8] cxx: src/pkg-ac/src/pkg-ac.cxx -> __build__/src/pkg-ac/src/pkg-ac.cxx.1.o
-[4/8] cxxshlib: __build__/src/pkg-aa/src/pkg-aa.cxx.1.o -> __build__/src/pkg-aa/libpkg-aa.so
-[5/8] cxxshlib: __build__/src/pkg-ab/src/pkg-ab.cxx.1.o -> __build__/src/pkg-ab/libpkg-ab.so
-[6/8] symlink_tsk: __build__/src/pkg-aa/libpkg-aa.so -> __build__/.install_area/lib/libpkg-aa.so
-[7/8] symlink_tsk: __build__/src/pkg-ab/libpkg-ab.so -> __build__/.install_area/lib/libpkg-ab.so
-[8/8] cxxprogram: __build__/src/pkg-ac/src/pkg-ac.cxx.1.o -> __build__/src/pkg-ac/pkg-ac
-Waf: Leaving directory `/home/binet/dev/work/__build__'
-'build' finished successfully (1.163s)
-Waf: Entering directory `/home/binet/dev/work/__build__'
-ROOT-home: /usr
-- install install-area/include/pkg-aa/h1d.hh (from src/pkg-aa/pkg-aa/h1d.hh)
-ROOT-home: /usr
-- install install-area/include/pkg-ab/h1d.hh (from src/pkg-ab/pkg-ab/h1d.hh)
-ROOT-home: /usr
-- install install-area/include/pkg-aa/h1d.hh (from src/pkg-aa/pkg-aa/h1d.hh)
-- install install-area/include/pkg-ab/h1d.hh (from src/pkg-ab/pkg-ab/h1d.hh)
-+ install install-area/project.info (from __build__/project.info)
-+ install install-area/share/hwaf/__hwaf_module__work.py (from __build__/__hwaf_module__work.py)
-+ install install-area/lib/libpkg-aa.so (from __build__/src/pkg-aa/libpkg-aa.so)
-+ install install-area/lib/libpkg-ab.so (from __build__/src/pkg-ab/libpkg-ab.so)
-+ install /home/binet/dev/work/install-area/bin/pkg-ac (from __build__/src/pkg-ac/pkg-ac)
-Waf: Leaving directory `/home/binet/dev/work/__build__'
-- install install-area/python/pkgaa.py (from src/pkg-aa/python/pkgaa.py)
-'install' finished successfully (0.038s)
-
-```
-
-We can now test a bit the artifacts produced as the result of the
-build.
-``pkg-aa`` produced a shared library ``lib-pkgaa`` and a python module
-``pkgaa``.
-Let's try out the python module:
-
-```sh
-$ hwaf shell
-[hwaf] $ python -c 'import pkgaa'
-hello from pkgaa
-[hwaf] $ ^D
-$ 
-```
-
-``hwaf`` manages the environment produced or modified by a project (or
-workarea) and allows the user to step into it, without modifying the
-parent environment, via the ``hwaf shell`` command to spawn an
-interactive subshell, or via ``hwaf run some-command`` command:
-
-```sh
-$ hwaf run python -c 'import pkgaa'
-hello from pkgaa
-'run' finished successfully (0.108s)
-```
-
-This is actual proof the environment has been modified, _i.e._ the
-``$PYTHONPATH`` environment variable has been adjusted to encompass
-the default installation area of the workarea.
-
-## Binary distributions
-
-Once a project has been built, we can distribute it in binary form:
-
-```sh
-$ hwaf bdist
-$ tar zft work-20130130-x86_64-archlinux-gcc47-opt.tar.gz
-work-20130130/
-work-20130130/lib/
-work-20130130/lib/libpkg-aa.so
-work-20130130/lib/libpkg-ab.so
-work-20130130/include/
-work-20130130/include/pkg-aa/
-work-20130130/include/pkg-aa/h1d.hh
-work-20130130/include/pkg-ab/
-work-20130130/include/pkg-ab/h1d.hh
-work-20130130/project.info
-work-20130130/share/
-work-20130130/share/hwaf/
-work-20130130/share/hwaf/__hwaf_module__work.py
-work-20130130/python/
-work-20130130/python/__pycache__/
-work-20130130/python/__pycache__/pkgaa.cpython-33.pyc
-work-20130130/python/pkgaa.pyc
-work-20130130/python/pkgaa.py
-work-20130130/bin/
-work-20130130/bin/pkg-ac
-```
-
 ## Anatomy of a wscript file
 
 The equivalent of the good ol' ``Makefile`` for ``hwaf`` is the
@@ -283,10 +113,6 @@ $ cd work
 $ hwaf pkg create mytools/mypkg
 $ hwaf pkg ls
 src/mytools/mypkg (local)
-src/pkg-aa (git)
-src/pkg-settings (git)
-src/pkg-ac (git)
-src/pkg-ab (git)
 
 $ cat src/mytools/mypkg/wscript
 ```
@@ -338,15 +164,8 @@ The argument to this function is a ``waf.Context`` object which:
 - gives access to the file system
 - gives access to build/configure functions
 
-Let's say that our new package will use the shared library from
-``pkg-aa``.
-Modify the ``pkg_deps`` like so:
-
-```python
-def pkg_deps(ctx):
-    ctx.use_pkg('pkg-aa')
-    return
-```
+Our simple ``mytools/mypkg`` package does not have any dependency, so
+nothing is required there.
 
 ### configure
 ``configure`` is where one configures the package or project.
@@ -355,6 +174,15 @@ tools/functions and/or define new environment variables.
 
 Let's try to detect whether our system has ``CLHEP`` installed but
 don't fail the build if it does not find it.
+
+Also, our package will build a ``C++`` library with a few symbols
+exported w/o any mangling so that it can be imported and used from
+``python``.
+We then have to configure our package to check whether ``python`` can
+be detected, and declare the ``PYTHONPATH`` environment variable as a
+runtime one (so the runtime subshell can be properly setup) and add
+the directory where our python files will be installed to the
+``PYTHONPATH`` variable.
 
 Let's modify ``configure``:
 
@@ -369,6 +197,13 @@ def configure(ctx):
         ctx.end_msg(ctx.env.CLHEP_VERSION)
         msg.info("clhep linkflags: %s" % ctx.env['LINKFLAGS_CLHEP'])
         msg.info("clhep cxxflags: %s" % ctx.env['CXXFLAGS_CLHEP'])
+    
+    from waflib.Utils import subst_vars
+    ctx.load('find_python')
+    ctx.find_python(mandatory=True)
+    ctx.declare_runtime_env('PYTHONPATH') 
+    pypath = subst_vars('${INSTALL_AREA}/python', ctx.env)
+    ctx.env.prepend_value('PYTHONPATH', [pypath])
 ```
 
 Note that, as we added a new package, we *must* re-configure the
@@ -386,27 +221,35 @@ was clhep found ?                        : ok
 clhep version                            : 2.1.3.1 
 clhep linkflags: ['-Wl,-O1,--sort-common,--as-needed,-z,relro']
 clhep cxxflags:  []
+Checking for program python2             : /usr/bin/python2 
+checking for __extern_always_inline      : ok 
+Checking for program python              : /usr/bin/python2 
+python executable '/usr/bin/python2' differs from system '/usr/bin/python'
+Checking for python version              : (2, 7, 3, 'final', 0) 
+Checking for library python2.7 in LIBDIR : yes 
+Checking for program /usr/bin/python2-config,python2.7-config,python-config-2.7,python2.7m-config : /usr/bin/python2-config 
+Checking for header Python.h             : yes 
+'configure' finished successfully (2.058s)
 ```
 
 ### build
 ``build`` is where one declares the build targets.
 
-Let's create a simple shared library which uses ``CLHEP``
-``LorentzVector``:
+Let's create a simple shared library which will compute some float quantity:
 
 ```sh
 $ touch src/mytools/mypkg/src/mypkgtool.cxx
 ```
 
 ```c++
-#include "CLHEP/Vector/LorentzVector.h"
+#include <cmath>
 
 extern "C" {
   
 float
-clhep_calc_mt(float x, float y, float z, float t) 
+calc_hypot(float x, float y) 
 {
-  return CLHEP::HepLorentzVector(x, y, z, t).mt();
+  return std::sqrt(x*x + y*y);
 }
 
 }
@@ -416,21 +259,21 @@ clhep_calc_mt(float x, float y, float z, float t)
 
 ```sh
 $ mkdir src/mytools/mypkg/python
-$ touch src/mytools/mypkg/python/pyclhep.py
+$ touch src/mytools/mypkg/python/pyhello.py
 ```
 
 ```python
 import ctypes
-lib = ctypes.cdll.LoadLibrary('libhello-clhep.so')
+lib = ctypes.cdll.LoadLibrary('libhello-world.so')
 if not lib:
-    raise RuntimeError("could not find hello-clhep")
+    raise RuntimeError("could not find hello-world")
 
-calc_mt = lib.clhep_calc_mt
-calc_mt.argtypes = [ctypes.c_float]*4
-calc_mt.restype = ctypes.c_float
+calc_hypot = lib.calc_hypot
+calc_hypot.argtypes = [ctypes.c_float]*2
+calc_hypot.restype = ctypes.c_float
 
 import sys
-sys.stdout.write("hlv.mt(10,10,10,20) = %s\n" % calc_mt(10,10,10,20))
+sys.stdout.write("hypot(10,20) = %s\n" % calc_hypot(10,20))
 sys.stdout.flush()
 # EOF #
 ```
@@ -439,19 +282,18 @@ and modify the ``build`` function like so:
 
 ```python
 def build(ctx):
-    ctx.build_linklib(
-        name = 'hello-clhep',
-        source = 'src/*.cxx',
-        use = ['CLHEP'],
-        )
-    
-    ctx(
-        features     = 'py',
-        name         = 'py-clhep',
-        source       = 'python/pyclhep.py',
-        install_path = '${INSTALL_AREA}/python',
+    ctx(features = 'cxx cxxshlib',
+        name     = 'cxx-hello-world',
+        source   = 'src/mypkgtool.cxx',
+        target   = 'hello-world',
         )
 
+    ctx(features     = 'py',
+        name         = 'py-hello',
+        source       = 'python/pyhello.py python/__init__.py',
+        install_path = '${INSTALL_AREA}/python/mypkg',
+        use          = 'cxx-hello-world',
+        )
     return
 ```
 
@@ -459,32 +301,11 @@ Rebuild and run:
 ```sh
 $ hwaf
 [...]
-$ hwaf run python -c 'import pyclhep'
-hlv.mt(10,10,10,20) = 17.32050895690918
+$ hwaf run python -c 'import mypkg.pyhello'
+hypot(10,20) = 22.360679626464844
 ```
 
 Note that we used the underlying features of ``waf`` to build and
-install the python module.
-This could be packaged up in a nice function instead, as was actually
-done for the ``build_linklib`` function (which is defined and exported
-in the ``pkg-settings`` package.)
-
-### Queries
-
-At the moment, a few queries have been implemented:
-
-```sh
-# list the parent project of the current project
-$ hwaf show projects
-project dependency list for [work] (#projs=0)
-work
-'show-projects' finished successfully (0.018s)
-
-# list the dependencies of a given package
-$ hwaf show pkg-uses mytools/mypkg
-package dependency list for [mytools/mypkg] (#pkgs=1)
-mytools/mypkg
-  pkg-aa
-'show-pkg-uses' finished successfully (0.018s)
-```
+install the python module and the ``C++`` library.
+This could be packaged up in a nice function instead.
 
