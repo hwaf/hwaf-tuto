@@ -13,7 +13,7 @@ do:
 
 ```sh
 $ go get github.com/hwaf/hwaf
-```
+```asfsafsf
 
 to get the latest ``hwaf`` tool (and its ``git`` goodies) installed
 and ready.
