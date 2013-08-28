@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export TUTO_HWAF_VERSION=20130208
+export TUTO_HWAF_VERSION=20130820
 export TUTO_HWAF_OS=linux
 export TUTO_HWAF_ARCH=amd64
 
@@ -24,7 +24,7 @@ function run_tuto() {
     fname=hwaf-${TUTO_HWAF_VERSION}-${TUTO_HWAF_OS}-${TUTO_HWAF_ARCH}
     echo ":: fetching [$fname.tar.gz]"
     curl -L \
-        http://cern.ch/mana-fwk/downloads/tar/${fname}.tar.gz \
+        http://cern.ch/hwaf/downloads/tar/${fname}.tar.gz \
         | tar zxf -
     export HWAF_ROOT=`pwd`
     export PATH=$HWAF_ROOT/bin:$PATH
