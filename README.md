@@ -257,6 +257,7 @@ calc_hypot(float x, float y)
 
 ```sh
 $ mkdir src/mytools/mypkg/python
+$ touch src/mytools/mypkg/python/__init__.py
 $ touch src/mytools/mypkg/python/pyhello.py
 ```
 
@@ -334,3 +335,52 @@ $ hwaf show constituents
 cxx-hello-world 
 py-hello 
 ```
+
+### Writing a Yaml script for the demo project
+
+Assuming we consider the same little project, we may describe it using the Yaml syntax instead of wscripts.
+
+You have just to replace the previously described wscript (thus in src/mytools/mypkg/wscript) by a hscript.yml script at the same location.
+
+```python
+## -*- yaml -*-
+
+package: {
+  name: "mytools/mypkg",
+  authors: ["my"],
+
+}
+
+configure: {
+  tools: ["compiler_c", "compiler_cxx", "python"],
+  env: {
+    PYTHONPATH: "${INSTALL_AREA}/python:${PYTHONPATH}"
+  },
+}
+
+build: {
+
+  cxx-hello-world: {
+    features: 'cxx cxxshlib',
+    source: 'src/mypkgtool.cxx',
+    target: 'hello-world',
+  },
+
+  py-hello: {
+    features: 'py',
+    source: ['python/pyhello.py', 'python/__init__.py'],
+    install_path: '${INSTALL_AREA}/python/mypkg',
+    use: 'cxx-hello-world',
+  }, 
+} 
+
+```
+
+Everything described previously will be identical:
+
+```sh
+$ hwaf configure
+$ hwaf
+$ hwaf run python -c 'import mypkg.pyhello'
+```
+
