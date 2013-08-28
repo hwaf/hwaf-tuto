@@ -12,7 +12,7 @@ So, if you have already the ``Go`` toolchain installed (see
 do:
 
 ```sh
-$ go get github.com/mana-fwk/hwaf
+$ go get github.com/hwaf/hwaf
 ```
 
 to get the latest ``hwaf`` tool (and its ``git`` goodies) installed
