@@ -73,7 +73,7 @@ def configure(ctx):
 
     ctx.load('find_python')
     ctx.find_python(mandatory=True)
-    ctx.declare_runtime_env('PYTHONPATH') 
+    ctx.hwaf_declare_runtime_env('PYTHONPATH') 
     pypath = subst_vars('\${INSTALL_AREA}/python', ctx.env)
     ctx.env.prepend_value('PYTHONPATH', [pypath])
     return
